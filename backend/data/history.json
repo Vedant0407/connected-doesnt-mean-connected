@@ -1,0 +1,173 @@
+[
+  {
+    "id": "diag_1792083665721_i4jw0",
+    "timestamp": "2026-10-15T17:01:05.721Z",
+    "target": "127.0.0.1",
+    "mode": "LIVE_TEST",
+    "testType": "TCP_PORT_ONLY",
+    "overallStatus": "DISCONNECTED_OR_FAILED",
+    "mostLikelyFailurePoint": "TARGET_SERVICE_PORT",
+    "confidence": "HIGH",
+    "primaryHeadline": "Target Service Port Unreachable or Closed",
+    "technicalRootCause": "Network Layer 3 routing succeeded, but the specific transport port on the target host failed to complete a TCP handshake. The remote daemon is stopped, listening on a different port, or blocked by a target host firewall.",
+    "report": {
+      "id": "diag_1792083665721_i4jw0",
+      "target": "127.0.0.1",
+      "timestamp": "2026-10-15T17:01:05.721Z",
+      "mode": "LIVE_TEST",
+      "overallStatus": "DISCONNECTED_OR_FAILED",
+      "mostLikelyFailurePoint": "TARGET_SERVICE_PORT",
+      "confidence": "HIGH",
+      "primaryHeadline": "Target Service Port Unreachable or Closed",
+      "technicalRootCause": "Network Layer 3 routing succeeded, but the specific transport port on the target host failed to complete a TCP handshake. The remote daemon is stopped, listening on a different port, or blocked by a target host firewall.",
+      "observations": [
+        {
+          "testName": "Local Network Interface",
+          "stage": "INTERFACE",
+          "status": "PASS",
+          "evidenceSource": "LIVE_TEST",
+          "details": "Active network interface \"Wi-Fi\" (172.17.48.79/255.255.248.0) connected with Default Gateway 172.17.48.1.",
+          "limitations": "Interface inspection checks local host configuration only. Having a valid IP and gateway assigned does NOT mean the gateway is actually reachable or providing Internet transit."
+        },
+        {
+          "testName": "Default Gateway Ping (172.17.48.1)",
+          "stage": "GATEWAY",
+          "status": "PASS",
+          "evidenceSource": "LIVE_TEST",
+          "details": "ICMP ping to 172.17.48.1 succeeded: 3/3 packets received (0% loss), avg RTT 5ms.",
+          "metric": "5ms",
+          "limitations": "IMPORTANT: A failed ICMP ping does NOT prove a host is down or offline. Many modern operating systems, cloud providers (like AWS/Azure), and edge firewalls intentionally filter ICMP by default while keeping HTTP/HTTPS (ports 80/443) fully operational."
+        },
+        {
+          "testName": "DNS Resolution (127.0.0.1)",
+          "stage": "DNS",
+          "status": "PASS",
+          "evidenceSource": "LIVE_TEST",
+          "details": "Target \"127.0.0.1\" is already a literal IP address; DNS lookup skipped.",
+          "metric": "4ms",
+          "limitations": "Direct IP usage bypasses DNS name resolution entirely."
+        },
+        {
+          "testName": "Target ICMP Ping (127.0.0.1)",
+          "stage": "ROUTING",
+          "status": "PASS",
+          "evidenceSource": "LIVE_TEST",
+          "details": "ICMP ping to 127.0.0.1 succeeded: 3/3 packets received (0% loss), avg RTT 0ms.",
+          "limitations": "IMPORTANT: A failed ICMP ping does NOT prove a host is down or offline. Many modern operating systems, cloud providers (like AWS/Azure), and edge firewalls intentionally filter ICMP by default while keeping HTTP/HTTPS (ports 80/443) fully operational."
+        },
+        {
+          "testName": "TCP Port 59999 Connection",
+          "stage": "TRANSPORT",
+          "status": "FAIL",
+          "evidenceSource": "LIVE_TEST",
+          "details": "TCP connection refused (RST received) by 127.0.0.1:59999. The host is reachable on the network, but no service is listening on port 59999, or a local firewall actively rejected the socket.",
+          "limitations": "An active connection refusal proves Layer 3 reachability to the target IP, isolating the failure strictly to Layer 4/7 (service port or firewall)."
+        }
+      ],
+      "testsPassed": [
+        "Local Network Interface: Active network interface \"Wi-Fi\" (172.17.48.79/255.255.248.0) connected with Default Gateway 172.17.48.1.",
+        "Default Gateway Ping (172.17.48.1): ICMP ping to 172.17.48.1 succeeded: 3/3 packets received (0% loss), avg RTT 5ms.",
+        "DNS Resolution (127.0.0.1): Target \"127.0.0.1\" is already a literal IP address; DNS lookup skipped.",
+        "Target ICMP Ping (127.0.0.1): ICMP ping to 127.0.0.1 succeeded: 3/3 packets received (0% loss), avg RTT 0ms."
+      ],
+      "testsFailed": [
+        "TCP Port 59999 Connection: TCP connection refused (RST received) by 127.0.0.1:59999. The host is reachable on the network, but no service is listening on port 59999, or a local firewall actively rejected the socket."
+      ],
+      "testsInconclusive": [],
+      "testsNotTested": [],
+      "alternativeExplanations": [
+        "An intermediate stateful firewall or cloud security group (e.g. AWS Security Group / iptables) may be dropping inbound connections on this port.",
+        "If an active TCP RST was returned (ECONNREFUSED), the operating system on the destination is alive and rejecting the socket connection."
+      ],
+      "recommendedSteps": [
+        "Verify whether the server process (e.g., Apache, Nginx, Node.js) is running on the target machine.",
+        "Check server-side firewall rules (iptables, UFW, Windows Defender Firewall).",
+        "Verify listening sockets on target host using \"netstat -an\" or \"ss -tulpn\"."
+      ],
+      "limitationsStatement": "Evidence-based diagnosis is constrained by observable responses and ICMP/TCP protocol semantics. Intermediate stateful firewalls, packet filters, and cloud policies can mimic or mask network outages."
+    }
+  },
+  {
+    "id": "diag_1792083648596_gdvq9",
+    "timestamp": "2026-10-15T17:00:48.596Z",
+    "target": "127.0.0.1",
+    "mode": "LIVE_TEST",
+    "testType": "QUICK",
+    "overallStatus": "CONNECTED_AND_HEALTHY",
+    "mostLikelyFailurePoint": "NONE_HEALTHY",
+    "confidence": "HIGH",
+    "primaryHeadline": "All Connectivity Layers Operational",
+    "technicalRootCause": "All tested stages—local interface, default gateway reachability, DNS name resolution, and transport layer socket establishment—responded successfully within expected latency thresholds.",
+    "report": {
+      "id": "diag_1792083648596_gdvq9",
+      "target": "127.0.0.1",
+      "timestamp": "2026-10-15T17:00:48.596Z",
+      "mode": "LIVE_TEST",
+      "overallStatus": "CONNECTED_AND_HEALTHY",
+      "mostLikelyFailurePoint": "NONE_HEALTHY",
+      "confidence": "HIGH",
+      "primaryHeadline": "All Connectivity Layers Operational",
+      "technicalRootCause": "All tested stages—local interface, default gateway reachability, DNS name resolution, and transport layer socket establishment—responded successfully within expected latency thresholds.",
+      "observations": [
+        {
+          "testName": "Local Network Interface",
+          "stage": "INTERFACE",
+          "status": "PASS",
+          "evidenceSource": "LIVE_TEST",
+          "details": "Active network interface \"Wi-Fi\" (172.17.48.79/255.255.248.0) connected with Default Gateway 172.17.48.1.",
+          "limitations": "Interface inspection checks local host configuration only. Having a valid IP and gateway assigned does NOT mean the gateway is actually reachable or providing Internet transit."
+        },
+        {
+          "testName": "Default Gateway Ping (172.17.48.1)",
+          "stage": "GATEWAY",
+          "status": "PASS",
+          "evidenceSource": "LIVE_TEST",
+          "details": "ICMP ping to 172.17.48.1 succeeded: 3/3 packets received (0% loss), avg RTT 12ms.",
+          "metric": "12ms",
+          "limitations": "IMPORTANT: A failed ICMP ping does NOT prove a host is down or offline. Many modern operating systems, cloud providers (like AWS/Azure), and edge firewalls intentionally filter ICMP by default while keeping HTTP/HTTPS (ports 80/443) fully operational."
+        },
+        {
+          "testName": "DNS Resolution (127.0.0.1)",
+          "stage": "DNS",
+          "status": "PASS",
+          "evidenceSource": "LIVE_TEST",
+          "details": "Target \"127.0.0.1\" is already a literal IP address; DNS lookup skipped.",
+          "metric": "3ms",
+          "limitations": "Direct IP usage bypasses DNS name resolution entirely."
+        },
+        {
+          "testName": "Target ICMP Ping (127.0.0.1)",
+          "stage": "ROUTING",
+          "status": "PASS",
+          "evidenceSource": "LIVE_TEST",
+          "details": "ICMP ping to 127.0.0.1 succeeded: 3/3 packets received (0% loss), avg RTT 0ms.",
+          "limitations": "IMPORTANT: A failed ICMP ping does NOT prove a host is down or offline. Many modern operating systems, cloud providers (like AWS/Azure), and edge firewalls intentionally filter ICMP by default while keeping HTTP/HTTPS (ports 80/443) fully operational."
+        },
+        {
+          "testName": "TCP Port 5001 Connection",
+          "stage": "TRANSPORT",
+          "status": "PASS",
+          "evidenceSource": "LIVE_TEST",
+          "details": "TCP connection to 127.0.0.1:5001 succeeded (SYN-ACK received and ACK transmitted) in 2ms.",
+          "metric": "2ms",
+          "limitations": "A successful TCP handshake only confirms Layer 4 transport connectivity. It does NOT guarantee that the application layer (e.g., HTTP server, TLS handshake, or backend API) is functioning properly."
+        }
+      ],
+      "testsPassed": [
+        "Local Network Interface: Active network interface \"Wi-Fi\" (172.17.48.79/255.255.248.0) connected with Default Gateway 172.17.48.1.",
+        "Default Gateway Ping (172.17.48.1): ICMP ping to 172.17.48.1 succeeded: 3/3 packets received (0% loss), avg RTT 12ms.",
+        "DNS Resolution (127.0.0.1): Target \"127.0.0.1\" is already a literal IP address; DNS lookup skipped.",
+        "Target ICMP Ping (127.0.0.1): ICMP ping to 127.0.0.1 succeeded: 3/3 packets received (0% loss), avg RTT 0ms.",
+        "TCP Port 5001 Connection: TCP connection to 127.0.0.1:5001 succeeded (SYN-ACK received and ACK transmitted) in 2ms."
+      ],
+      "testsFailed": [],
+      "testsInconclusive": [],
+      "testsNotTested": [],
+      "alternativeExplanations": [],
+      "recommendedSteps": [
+        "No corrective network actions required. Host has verified end-to-end connectivity."
+      ],
+      "limitationsStatement": "Evidence-based diagnosis is constrained by observable responses and ICMP/TCP protocol semantics. Intermediate stateful firewalls, packet filters, and cloud policies can mimic or mask network outages."
+    }
+  }
+]
